@@ -1,0 +1,89 @@
+name:
+
+abbreviation: "kor"
+
+image:
+  repository: "registry-aws.veriga.net/kor-node"
+  tag: "V22.1"
+  pullPolicy: Always
+
+live:
+  enabled: "true"
+  ipc:
+    enabled: "false"
+    ipsPort: "7077"
+    processIpcPort: ""
+  peering:
+    enabled: "true"
+    ingress:
+      enabled: "true"
+      host: ""
+    port: "7075"
+  rpc:
+    enabled: "true"
+    control: "false"
+    ingress:
+      enabled: "false"
+      host: ""
+    port: "7076"
+  webSocket:
+    enabled: "false"
+    address: "::1"
+    host: "::1"
+    port: "7078"
+
+beta:
+  enabled: "false"
+  ips:
+    enabled: "false"
+    ipsPort: "56000"
+    processIpcPort: ""
+  peering:
+    enabled: "false"
+    port: "54000"
+  rpc:
+    enabled: "false"
+    control: "false"
+    ingress:
+      enabled: "false"
+      host: ""
+    port: "55000"
+  webSocket:
+    enabled: "false"
+    address: "::1"
+    host: "::1"
+    port: "57000"
+
+test:
+  enabled: "false"
+  ipc:
+    enabled: "false"
+    ipsPort: "17077"
+    processIpcPort: ""
+  peering:
+    enabled: "false"
+    port: "44000"
+  rpc:
+    enabled: "false"
+    control: "false"
+    ingress:
+      enabled: "false"
+      host: ""
+    port: "45000"
+  webSocket:
+    enabled: "false"
+    address: "::1"
+    host: "::1"
+    port: "17078"
+
+replicaCount: 2
+
+storageCapacity: 10Gi
+
+affinity: {}
+
+nodeSelector: {}
+
+resources: {}
+
+tolerations: []

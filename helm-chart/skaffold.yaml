@@ -1,0 +1,23 @@
+apiVersion: skaffold/v2beta21
+kind: Config
+profiles:
+  - name: pre
+    deploy:
+      kubectl:
+        manifests:
+          - ./pre.yaml
+  - name: test
+    deploy:
+      helm:
+        releases:
+          - name: pv
+            chartPath: ./helm-charts/pv
+            namespace: kor-node
+          - name: kor-node
+            chartPath: ./helm-charts/nano-node
+            namespace: kor-node
+            setValues:
+              abbreviation: kor
+              name: kor-node
+              live.peering.port: 7175
+              live.peering.ingress.host: "kor-peering.verigasvc.com"

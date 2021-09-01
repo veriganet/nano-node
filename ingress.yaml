@@ -1,0 +1,42 @@
+{{ if eq .Values.rpc.beta.ingress.enabled "true" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-beta
+  labels:
+    app: {{ .Values.name }}
+spec:
+  rules:
+    - host: {{ .Values.rpc.beta.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.name }}
+                port:
+                  number: {{ .Values.rpc.beta.port }}
+{{ end }}
+
+# live
+{{ if eq .Values.rpc.live.ingress.enabled "true" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-live
+  labels:
+    app: {{ .Values.name }}
+spec:
+  rules:
+    - host: {{ .Values.rpc.live.ingress.host }}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.name }}
+                port:
+                  number: {{ .Values.rpc.live.port }}
+  {{ end }}

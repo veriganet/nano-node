@@ -1,0 +1,70 @@
+{{ if eq .Values.live.enabled "true" }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .Values.name }}-live
+  labels:
+    app: {{ .Values.name }}-live
+  namespace: {{ .Release.Namespace }}
+spec:
+  selector:
+    matchLabels:
+      app: {{ .Values.name }}-live
+  serviceName: {{ .Values.name }}-live
+  replicas: {{ $.Values.replicaCount }}
+  template:
+    metadata:
+      labels:
+        app: {{ .Values.name }}-live
+    spec:
+      containers:
+        - name: {{ .Values.name }}-live
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            # rpc
+            {{ if eq .Values.live.rpc.enabled "true" }}
+            - containerPort: {{ .Values.live.rpc.port }}
+            {{ end }}
+            # peering
+            {{ if eq .Values.live.peering.enabled "true" }}
+            - containerPort: {{ .Values.live.peering.port }}
+              hostPort: {{ .Values.live.peering.port }}
+              protocol: TCP
+            {{ end }}
+            # websocket
+            {{ if eq .Values.live.webSocket.enabled "true" }}
+            - containerPort: {{ .Values.live.webSocket.port }}
+            {{ end }}
+          volumeMounts:
+            - name: data-{{ .Values.name }}-live
+              mountPath: /root/{{ .Values.abbreviation | upper }}
+            - name: data-{{ .Values.name }}-live
+              mountPath: /root/{{ .Values.abbreviation | title }}
+          livenessProbe:
+            # rpc
+            {{ if eq .Values.live.rpc.enabled "true" }}
+            httpGet:
+              path: /
+              port: {{ .Values.live.rpc.port }}
+            {{ end }}
+          readinessProbe:
+            # rpc
+            {{ if eq .Values.live.rpc.enabled "true" }}
+            httpGet:
+              path: /
+              port: {{ .Values.live.rpc.port }}
+            {{ end }}
+      imagePullSecrets:
+        - name: registry
+  volumeClaimTemplates:
+    - metadata:
+        name: data-{{ .Values.name }}-live
+        namespace: {{ .Release.Namespace }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.storageCapacity }}
+{{ end }}

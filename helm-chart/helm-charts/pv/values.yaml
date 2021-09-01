@@ -1,0 +1,4 @@
+name: kor-node-live
+storage: 10Gi
+storageClassName: nfs-dynamic
+replica: 2

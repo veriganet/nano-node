@@ -1,0 +1,41 @@
+{{ if eq .Values.live.rpc.ingress.enabled "true" }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-rpc-live
+  labels:
+    app: {{ .Values.name }}
+spec:
+  rules:
+    - host: {{ .Values.live.rpc.ingress.host}}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.name }}-rpc-live
+                port:
+                  number: {{ .Values.live.rpc.port }}
+{{ end }}
+{{ if eq .Values.live.peering.ingress.enabled "true" }}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.name }}-peering-live
+  labels:
+    app: {{ .Values.name }}
+spec:
+  rules:
+    - host: {{ .Values.live.peering.ingress.host}}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.name }}-peering-live
+                port:
+                  number: {{ .Values.live.peering.port }}
+{{ end }}

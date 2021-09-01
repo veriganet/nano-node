@@ -1,0 +1,39 @@
+# rpc
+{{ if eq .Values.live.rpc.enabled "true" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-rpc-live
+  labels:
+    app: {{ .Values.name }}-rpc-live
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    # rpc
+    - port: {{ .Values.live.rpc.port }}
+      protocol: TCP
+      name: rpc
+      targetPort: {{ .Values.live.rpc.port }}
+  selector:
+    app: {{ .Values.name }}-rpc-live
+{{ end }}
+# webSocket
+{{ if eq .Values.live.webSocket.enabled "true" }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Values.name }}-ws-live
+  labels:
+    app: {{ .Values.name }}-ws-live
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.live.webSocket.port }}
+      protocol: TCP
+      name: websocket
+      targetPort: {{ .Values.live.webSocket.port }}
+{{ end }}

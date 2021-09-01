@@ -1,0 +1,15 @@
+{{ range $i, $e := until (.Values.replica | int) }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data-{{ $.Values.name }}-{{ $.Values.name }}-{{ $i }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  storageClassName: {{ $.Values.storageClassName }}{{ $i }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ $.Values.storage }}
+{{ end }}

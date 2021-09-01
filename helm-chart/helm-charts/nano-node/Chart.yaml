@@ -1,0 +1,10 @@
+apiVersion: v2
+description: A Helm chart for Kubernetes
+name: nano-node
+version: 0.1.0
+appVersion: 0.1.0
+type: application
+
+maintainers:
+  - name: verigaNET Infa Team
+    email: infra@veriga.net
