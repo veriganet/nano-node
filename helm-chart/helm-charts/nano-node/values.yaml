@@ -15,9 +15,6 @@ live:
     processIpcPort: ""
   peering:
     enabled: "true"
-    ingress:
-      enabled: "true"
-      host: ""
     port: "7075"
   rpc:
     enabled: "true"
