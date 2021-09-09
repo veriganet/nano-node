@@ -33,3 +33,4 @@
 
 .idea
 venv
+dnsupdate/.env
