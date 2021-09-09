@@ -2,6 +2,10 @@ name:
 
 abbreviation: "kor"
 
+cloudflareAPIToken: "vault:secret/data/cloudflare/#api_key"
+cloudflareZoneName: "verigasvc.com"
+cloudflareZoneID: "vault:secret/data/cloudflare/#zone_id"
+
 image:
   repository: "registry-aws.veriga.net/kor-node"
   tag: "V22.1"

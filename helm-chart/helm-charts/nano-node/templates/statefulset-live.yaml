@@ -14,11 +14,36 @@ spec:
   replicas: {{ $.Values.replicaCount }}
   template:
     metadata:
+      annotations:
+        vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
+        vault.security.banzaicloud.io/vault-role: "{{ .Chart.Name }}"
+        vault.security.banzaicloud.io/vault-skip-verify: "true"
       labels:
         app: {{ .Values.name }}-live
     spec:
+      initContainers:
+        - name: dnsupdate
+          image: "registry-aws.veriga.net/nano-node:dnsupdate-latest"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/local/bin/dnsupdate"]
+          env:
+            - name: CLOUDFLARE_API_TOKEN
+              value: "{{ .Values.cloudflareAPIToken }}"
+            - name: CLOUDFLARE_ZONE_NAME
+              value: "{{ .Values.cloudflareZoneName }}"
+            - name: CLOUDFLARE_ZONE_ID
+              value: "{{ .Values.cloudflareZoneID }}"
+            - name: ABBREVIATION
+              value: "{{ .Values.abbreviation }}"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
       containers:
-        - name: {{ .Values.name }}-live
+        - name: node-live
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
@@ -36,6 +61,13 @@ spec:
             {{ if eq .Values.live.webSocket.enabled "true" }}
             - containerPort: {{ .Values.live.webSocket.port }}
             {{ end }}
+          resources:
+            requests:
+              cpu: 300m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
           volumeMounts:
             - name: data-{{ .Values.name }}-live
               mountPath: /root/{{ .Values.abbreviation | upper }}
@@ -57,6 +89,8 @@ spec:
             {{ end }}
       imagePullSecrets:
         - name: registry
+      serviceAccountName: "nano-node"
+      automountServiceAccountToken: true
   volumeClaimTemplates:
     - metadata:
         name: data-{{ .Values.name }}-live

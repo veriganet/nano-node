@@ -20,4 +20,3 @@ profiles:
               abbreviation: kor
               name: kor-node
               live.peering.port: 7175
-              live.peering.ingress.host: "kor-peering.verigasvc.com"
