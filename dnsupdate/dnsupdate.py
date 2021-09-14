@@ -27,8 +27,8 @@ def get_env_variable(env):
         return os.environ.get(env)
 
 
-#hostname = subprocess.getoutput('hostname')
-hostname = "kor-node-live-0"
+hostname = subprocess.getoutput('hostname')
+#hostname = "kor-node-live-0"
 logging.debug("Hostname %s" % hostname)
 peer_number = hostname.split("-")[-1]
 network = hostname.split("-")[-2]
