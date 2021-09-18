@@ -20,8 +20,10 @@ live:
   peering:
     enabled: "true"
     port: "7075"
-  rpc:
+  representative:
     enabled: "true"
+  rpc:
+    enabled: "false"
     control: "false"
     ingress:
       enabled: "false"
