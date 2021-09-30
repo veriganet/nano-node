@@ -1,11 +1,15 @@
-{{ if eq .Values.live.rpc.ingress.enabled "true" }}
+#
+# rpc
+#
+{{ if eq .Values.live.rpc.ingress.enabled true }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ .Values.name }}-rpc-live
+  name: rpc-live
+  namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ .Values.name }}
+    app: rpc-live
 spec:
   rules:
     - host: {{ .Values.live.rpc.ingress.host}}
@@ -15,7 +19,32 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: {{ .Values.name }}-rpc-live
+                name: rpc-live
                 port:
                   number: {{ .Values.live.rpc.port }}
+{{ end }}
+#
+# webSocket
+#
+{{ if eq .Values.live.webSocket.ingress.enabled true }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ws-live
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: ws-live
+spec:
+  rules:
+    - host: {{ .Values.live.webSocket.ingress.host}}
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: ws-live
+                port:
+                  number: {{ .Values.live.webSocket.port }}
 {{ end }}

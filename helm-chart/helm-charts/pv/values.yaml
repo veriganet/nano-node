@@ -1,4 +1,29 @@
-name: kor-node-live
-storage: 10Gi
 storageClassName: nfs-dynamic
-replica: 2
+
+live:
+  enabled: true
+  peering:
+    enabled: true
+    storage: 10Gi
+    replica: 2
+  rpc:
+    enabled: true
+    storage: 10Gi
+    replica: 2
+beta:
+  enabled: false
+  peering:
+    enabled: true
+    storage: 1Gi
+    replica: 1
+  rpc:
+test:
+  enabled: false
+  peering:
+    enabled: true
+    storage: 1Gi
+    replica: 1
+  rpc:
+    enabled: true
+    storage: 1Gi
+    replica: 1

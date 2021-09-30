@@ -1,9 +1,13 @@
-{{ range $i, $e := until (.Values.replica | int) }}
+# #######
+# PEERING
+# #######
+{{ if eq .Values.live.rpc.enabled true}}
+{{ range $i, $e := until (.Values.live.peering.replica | int) }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: data-{{ $.Values.name }}-{{ $.Values.name }}-{{ $i }}
+  name: data-node-live-{{ $i }}
   namespace: {{ $.Release.Namespace }}
 spec:
   storageClassName: {{ $.Values.storageClassName }}{{ $i }}
@@ -11,5 +15,27 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ $.Values.storage }}
+      storage: {{ $.Values.live.peering.storage }}
+{{ end }}
+{{ end }}
+
+# ###
+# RPC
+# ###
+{{ if eq .Values.live.rpc.enabled true}}
+{{ range $i, $e := until (.Values.live.rpc.replica | int) }}
+---
+kind: PersistentVolumeClaim
+apiVersion: v1
+metadata:
+  name: data-rpc-live-{{ $i }}
+  namespace: {{ $.Release.Namespace }}
+spec:
+  storageClassName: {{ $.Values.storageClassName }}{{ $i }}
+  accessModes:
+    - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ $.Values.live.rpc.storage }}
+{{ end }}
 {{ end }}

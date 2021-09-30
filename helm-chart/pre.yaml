@@ -2,7 +2,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: kor-node
+  name: kor
 ---
 apiVersion: v1
 data:
@@ -10,5 +10,5 @@ data:
 kind: Secret
 metadata:
   name: registry
-  namespace: kor-node
+  namespace: kor
 type: kubernetes.io/dockerconfigjson

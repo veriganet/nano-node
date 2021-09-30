@@ -1,5 +1,3 @@
-name:
-
 abbreviation: "kor"
 
 cloudflareAPIToken: "vault:secret/data/cloudflare/#api_key"
@@ -12,76 +10,82 @@ image:
   pullPolicy: Always
 
 live:
-  enabled: "true"
+  enabled: 
   ipc:
-    enabled: "false"
-    ipsPort: "7077"
+    enabled: false
+    ipcPort: 7077
     processIpcPort: ""
   peering:
-    enabled: "true"
-    port: "7075"
+    enabled: false
+    port: 7075
+    storage: 10Gi
+    replicaCount: 2
   representative:
-    enabled: "true"
+    enabled: true
   rpc:
-    enabled: "false"
-    control: "false"
+    enabled: false
+    control: false
     ingress:
-      enabled: "false"
+      enabled: false
       host: ""
-    port: "7076"
+    storage: 10Gi
+    port: 7076
+    replicaCount: 2
   webSocket:
-    enabled: "false"
+    enabled: false
     address: "::1"
-    host: "::1"
-    port: "7078"
+    ingress:
+      enabled: false
+      host: ""
+    port: 7078
 
 beta:
-  enabled: "false"
+  enabled: false
   ips:
-    enabled: "false"
+    enabled: false
     ipsPort: "56000"
     processIpcPort: ""
   peering:
-    enabled: "false"
+    enabled: false
     port: "54000"
   rpc:
-    enabled: "false"
-    control: "false"
+    enabled: false
+    control: false
     ingress:
-      enabled: "false"
+      enabled: false
       host: ""
     port: "55000"
   webSocket:
-    enabled: "false"
+    enabled: false
     address: "::1"
     host: "::1"
     port: "57000"
 
 test:
-  enabled: "false"
+  enabled: false
   ipc:
-    enabled: "false"
+    enabled: false
     ipsPort: "17077"
     processIpcPort: ""
   peering:
-    enabled: "false"
+    enabled: false
     port: "44000"
   rpc:
-    enabled: "false"
-    control: "false"
+    enabled: false
+    control: false
     ingress:
-      enabled: "false"
+      enabled: false
       host: ""
     port: "45000"
   webSocket:
-    enabled: "false"
+    enabled: false
     address: "::1"
     host: "::1"
     port: "17078"
 
-replicaCount: 2
-
-storageCapacity: 10Gi
+serviceAccount:
+  create: false
+  name: "nano-node"
 
 affinity: {}
 
