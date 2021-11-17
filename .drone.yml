@@ -28,6 +28,39 @@ steps:
       event:
         - push
 
+  - name: preprep
+    image: registry-aws.veriga.net/base-image:dind-awscli
+    pull: if-not-exists
+    volumes:
+      - name: dockersock
+        path: /var/run
+    environment:
+      ABBREVIATION:
+        from_secret: ABBREVIATION
+      AWS_ACCESS_KEY_ID:
+        from_secret: drone_aws_access_key_id
+      AWS_SECRET_ACCESS_KEY:
+        from_secret: drone_aws_secret_access_key
+      ECR:
+        from_secret: ECR
+      NODE_VERSION:
+        from_secret: NODE_VERSION
+      REPO_NAME:
+        from_secret: REPO_NAME
+    commands:
+      - sleep 5 # give docker enough time to start
+      - aws ecr get-login-password --region eu-west-1 | docker login --username AWS --password-stdin $ECR
+      - docker build -f preprep/Dockerfile -t $REPO_NAME:preprep-latest .
+      - docker tag $REPO_NAME:preprep-latest $ECR/$REPO_NAME:preprep-latest
+      - docker push $ECR/$REPO_NAME:preprep-latest
+    when:
+      event:
+        - push
+    depends_on:
+      - rebrand-node
+      - build-binary
+      - build-push-node
+
 services:
   - name: docker
     image: docker:dind
