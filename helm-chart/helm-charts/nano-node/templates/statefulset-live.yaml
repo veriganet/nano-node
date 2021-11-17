@@ -1,25 +1,30 @@
-{{ if eq .Values.live.enabled "true" }}
+# #######
+# PEERING
+# #######
+{{ if eq .Values.live.peering.enabled true }}
+---
 apiVersion: apps/v1
 kind: StatefulSet
 metadata:
-  name: {{ .Values.name }}-live
+  name: node-live
   labels:
-    app: {{ .Values.name }}-live
+    app: node-live
   namespace: {{ .Release.Namespace }}
 spec:
   selector:
     matchLabels:
-      app: {{ .Values.name }}-live
-  serviceName: {{ .Values.name }}-live
-  replicas: {{ $.Values.replicaCount }}
+      app: node-live
+  serviceName: node-live
+  replicas: {{ $.Values.live.peering.replicaCount }}
   template:
     metadata:
       annotations:
         vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
-        vault.security.banzaicloud.io/vault-role: "{{ .Chart.Name }}"
+        vault.security.banzaicloud.io/vault-role: "{{ .Values.abbreviation }}"
         vault.security.banzaicloud.io/vault-skip-verify: "true"
+      namespace: {{ .Release.Namespace }}
       labels:
-        app: {{ .Values.name }}-live
+        app: node-live
     spec:
       initContainers:
         - name: dnsupdate
@@ -42,24 +47,41 @@ spec:
             limits:
               cpu: 200m
               memory: 200Mi
+{{ if eq .Values.live.representative.enabled true }}
+        - name: preprep
+          image: {{ .Values.image.repository }}:preprep-latest
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["/usr/bin/entry_preprep.sh"]
+          env:
+            - name: ABBREVIATION
+              value: {{ .Values.abbreviation }}
+            - name: PRIVATE_KEY_REP0
+              value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep0"
+            - name: PRIVATE_KEY_REP1
+              value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep1"
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 200m
+              memory: 200Mi
+          volumeMounts:
+            - name: data
+              mountPath: /root/{{ .Values.abbreviation | upper }}
+            - name: data
+              mountPath: /root/{{ .Values.abbreviation | title }}
+{{ end }}
       containers:
-        - name: node-live
+        - name: node
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
-            # rpc
-            {{ if eq .Values.live.rpc.enabled "true" }}
-            - containerPort: {{ .Values.live.rpc.port }}
-            {{ end }}
             # peering
-            {{ if eq .Values.live.peering.enabled "true" }}
+            {{ if eq .Values.live.peering.enabled true }}
             - containerPort: {{ .Values.live.peering.port }}
               hostPort: {{ .Values.live.peering.port }}
               protocol: TCP
-            {{ end }}
-            # websocket
-            {{ if eq .Values.live.webSocket.enabled "true" }}
-            - containerPort: {{ .Values.live.webSocket.port }}
             {{ end }}
           resources:
             requests:
@@ -69,36 +91,110 @@ spec:
               cpu: 500m
               memory: 512Mi
           volumeMounts:
-            - name: data-{{ .Values.name }}-live
+            - name: data
               mountPath: /root/{{ .Values.abbreviation | upper }}
-            - name: data-{{ .Values.name }}-live
+            - name: data
               mountPath: /root/{{ .Values.abbreviation | title }}
           livenessProbe:
-            # rpc
-            {{ if eq .Values.live.rpc.enabled "true" }}
-            httpGet:
-              path: /
-              port: {{ .Values.live.rpc.port }}
+            # peering
+            {{ if eq .Values.live.peering.enabled true }}
+            tcpSocket:
+              port: {{ .Values.live.peering.port }}
             {{ end }}
           readinessProbe:
-            # rpc
-            {{ if eq .Values.live.rpc.enabled "true" }}
-            httpGet:
-              path: /
-              port: {{ .Values.live.rpc.port }}
+            {{ if eq .Values.live.peering.enabled true }}
+            tcpSocket:
+              port: {{ .Values.live.peering.port }}
             {{ end }}
       imagePullSecrets:
         - name: registry
-      serviceAccountName: "nano-node"
+      serviceAccountName: "{{ .Values.abbreviation }}"
       automountServiceAccountToken: true
   volumeClaimTemplates:
     - metadata:
-        name: data-{{ .Values.name }}-live
+        name: data
         namespace: {{ .Release.Namespace }}
       spec:
         accessModes:
           - ReadWriteOnce
         resources:
           requests:
-            storage: {{ .Values.storageCapacity }}
+            storage: {{ .Values.live.peering.storage }}
+{{ end }}
+# ###
+# RPC
+# ###
+{{ if eq .Values.live.rpc.enabled true }}
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rpc-live
+  namespace: {{ .Release.Namespace }}
+  labels:
+    app: rpc-live
+spec:
+  selector:
+    matchLabels:
+      app: rpc-live
+  serviceName: rpc-live
+  replicas: {{ $.Values.live.rpc.replicaCount }}
+  template:
+    metadata:
+      annotations:
+        vault.security.banzaicloud.io/vault-addr: "https://vault.vault:8200"
+        vault.security.banzaicloud.io/vault-role: "{{ .Values.abbreviation }}"
+        vault.security.banzaicloud.io/vault-skip-verify: "true"
+      namespace: {{ .Release.Namespace }}
+      labels:
+        app: rpc-live
+    spec:
+      containers:
+        - name: rpc
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            # rpc
+            {{ if eq .Values.live.rpc.enabled true }}
+            - containerPort: {{ .Values.live.rpc.port }}
+              protocol: TCP
+            {{ end }}
+            # webSocket
+            {{ if eq .Values.live.webSocket.enabled true }}
+            - containerPort: {{ .Values.live.webSocket.port }}
+              protocol: TCP
+            {{ end }}
+          resources:
+            requests:
+              cpu: 300m
+              memory: 256Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+          volumeMounts:
+            - name: data
+              mountPath: /root/{{ .Values.abbreviation | upper }}
+            - name: data
+              mountPath: /root/{{ .Values.abbreviation | title }}
+          livenessProbe:
+            # rpc
+            httpGet:
+              port: 7076
+          readinessProbe:
+            httpGet:
+              port: 7076
+      imagePullSecrets:
+        - name: registry
+      serviceAccountName: "{{ .Values.abbreviation }}"
+      automountServiceAccountToken: true
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+        namespace: {{ .Release.Namespace }}
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: {{ .Values.live.rpc.storage }}
 {{ end }}

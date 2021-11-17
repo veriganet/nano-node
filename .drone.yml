@@ -4,7 +4,7 @@ name: nano-node
 
 steps:
   - name: dnsupdate
-    image: veriganet/dind-awscli
+    image: registry-aws.veriga.net/base-image:dind-awscli
     volumes:
       - name: dockersock
         path: /var/run

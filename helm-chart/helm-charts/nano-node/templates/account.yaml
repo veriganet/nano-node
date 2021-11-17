@@ -1,5 +1,7 @@
+{{ if eq .Values.serviceAccount.create true }}
 apiVersion: v1
 kind: ServiceAccount
 metadata:
-  name: {{ .Chart.Name }}
+  name: {{ .Values.abbreviation }}
   namespace: {{ .Release.Namespace }}
+{{ end }}
