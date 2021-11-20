@@ -27,11 +27,7 @@ profiles:
             setValues:
               abbreviation: kor
               live.rpc.control: false
-              #live.rpc.ingress.enabled: false
-              #live.rpc.ingress.host: "kor-rpc.verigsvc.com"
               live.rpc.enabled: true
               live.rpc.port: 7076
               live.webSocket.enabled: true
-              #live.webSocket.ingress.enabled: false
-              #live.webSocket.ingress.host: "kor-ws.verigasvc.com"
               live.webSocket.port: 7078

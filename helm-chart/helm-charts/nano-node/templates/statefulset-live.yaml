@@ -76,6 +76,12 @@ spec:
         - name: node
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command:
+            - /usr/bin/entry.sh
+            - kor_node
+            - daemon
+            - -l
+            - --config node.enable_voting=true
           ports:
             # peering
             {{ if eq .Values.live.peering.enabled true }}
