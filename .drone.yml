@@ -36,3 +36,6 @@ services:
 volumes:
   - name: dockersock
     temp: {}
+
+image_pull_secrets:
+  - docker_secret_veriga
