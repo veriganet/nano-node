@@ -2,7 +2,7 @@
 # PEERING
 # #######
 {{ if eq .Values.live.rpc.enabled true}}
-{{ range $i, $e := until (.Values.live.peering.replica | int) }}
+{{ range $i, $e := until (.Values.live.node.replicaCount | int) }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1
@@ -15,7 +15,7 @@ spec:
     - ReadWriteMany
   resources:
     requests:
-      storage: {{ $.Values.live.peering.storage }}
+      storage: {{ $.Values.live.node.storage }}
 {{ end }}
 {{ end }}
 
@@ -23,7 +23,7 @@ spec:
 # RPC
 # ###
 {{ if eq .Values.live.rpc.enabled true}}
-{{ range $i, $e := until (.Values.live.rpc.replica | int) }}
+{{ range $i, $e := until (.Values.live.rpc.replicaCount | int) }}
 ---
 kind: PersistentVolumeClaim
 apiVersion: v1

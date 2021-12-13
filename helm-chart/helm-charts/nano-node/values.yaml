@@ -4,30 +4,77 @@ cloudflareAPIToken: "vault:secret/data/cloudflare/#api_key"
 cloudflareZoneName: "verigasvc.com"
 cloudflareZoneID: "vault:secret/data/cloudflare/#zone_id"
 
-image:
-  repository: "registry-aws.veriga.net/kor-node"
-  tag: "V22.1"
-  pullPolicy: Always
+dnsupdate:
+  image:
+    account: "veriganet"
+    tag: "dnsupdate-latest"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi
+
+imagePullSecrets:
+  - name: registry
+
+preprep:
+  image:
+    account: "veriganet"
+    tag: "preprep-latest"
+    pullPolicy: IfNotPresent
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 50m
+      memory: 128Mi
 
 live:
-  enabled: 
+  enabled: false
   ipc:
     enabled: false
     ipcPort: 7077
     processIpcPort: ""
+  node:
+    image:
+      account: "veriganet"
+      tag: "V22.1"
+      pullPolicy: Always
+    resources:
+      requests:
+        cpu: 300m
+        memory: 256Mi
+      limits:
+        cpu: 300m
+        memory: 256Mi
+    storage: 10Gi
+    replicaCount: 2
   peering:
     enabled: false
     port: 7075
-    storage: 10Gi
-    replicaCount: 2
   representative:
     enabled: true
   rpc:
     enabled: false
     control: false
+    image:
+      account: "veriganet"
+      tag: "V22.1"
+      pullPolicy: Always
     ingress:
       enabled: false
       host: ""
+    resources:
+      requests:
+        cpu: 300m
+        memory: 256Mi
+      limits:
+        cpu: 300m
+        memory: 256Mi
     storage: 10Gi
     port: 7076
     replicaCount: 2

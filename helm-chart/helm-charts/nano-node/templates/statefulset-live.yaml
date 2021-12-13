@@ -15,7 +15,7 @@ spec:
     matchLabels:
       app: node-live
   serviceName: node-live
-  replicas: {{ $.Values.live.peering.replicaCount }}
+  replicas: {{ $.Values.live.node.replicaCount }}
   template:
     metadata:
       annotations:
@@ -28,29 +28,23 @@ spec:
     spec:
       initContainers:
         - name: dnsupdate
-          image: "registry-aws.veriga.net/nano-node:dnsupdate-latest"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.dnsupdate.image.account }}/nano-node:{{ .Values.dnsupdate.image.tag }}"
+          imagePullPolicy: {{ .Values.dnsupdate.image.pullPolicy }}
           command: ["/usr/local/bin/dnsupdate"]
           env:
+            - name: ABBREVIATION
+              value: "{{ .Values.abbreviation }}"
             - name: CLOUDFLARE_API_TOKEN
               value: "{{ .Values.cloudflareAPIToken }}"
             - name: CLOUDFLARE_ZONE_NAME
               value: "{{ .Values.cloudflareZoneName }}"
             - name: CLOUDFLARE_ZONE_ID
               value: "{{ .Values.cloudflareZoneID }}"
-            - name: ABBREVIATION
-              value: "{{ .Values.abbreviation }}"
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              cpu: 200m
-              memory: 200Mi
+          resources: {{ toYaml .Values.dnsupdate.resources | nindent 12 }}
 {{ if eq .Values.live.representative.enabled true }}
         - name: preprep
-          image: {{ .Values.image.repository }}:preprep-latest
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.preprep.image.account }}/{{ .Values.abbreviation }}:{{ .Values.preprep.image.tag }}"
+          imagePullPolicy: {{ .Values.preprep.image.pullPolicy }}
           command: ["/usr/bin/entry_preprep.sh"]
           env:
             - name: ABBREVIATION
@@ -59,13 +53,7 @@ spec:
               value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep0"
             - name: PRIVATE_KEY_REP1
               value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep1"
-          resources:
-            requests:
-              cpu: 100m
-              memory: 128Mi
-            limits:
-              cpu: 200m
-              memory: 200Mi
+          resources: {{ toYaml .Values.preprep.resources | nindent 12 }}
           volumeMounts:
             - name: data
               mountPath: /root/{{ .Values.abbreviation | upper }}
@@ -74,8 +62,8 @@ spec:
 {{ end }}
       containers:
         - name: node
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.live.node.image.account }}/{{ .Values.abbreviation }}:{{ .Values.live.node.image.tag }}"
+          imagePullPolicy: {{ .Values.live.node.image.pullPolicy }}
           command:
             - /usr/bin/entry.sh
             - kor_node
@@ -89,13 +77,7 @@ spec:
               hostPort: {{ .Values.live.peering.port }}
               protocol: TCP
             {{ end }}
-          resources:
-            requests:
-              cpu: 300m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
+          resources: {{ toYaml .Values.live.node.resources | nindent 12 }}
           volumeMounts:
             - name: data
               mountPath: /root/{{ .Values.abbreviation | upper }}
@@ -113,7 +95,9 @@ spec:
               port: {{ .Values.live.peering.port }}
             {{ end }}
       imagePullSecrets:
-        - name: registry
+        {{- with .Values.imagePullSecrets }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       serviceAccountName: "{{ .Values.abbreviation }}"
       automountServiceAccountToken: true
   volumeClaimTemplates:
@@ -125,7 +109,7 @@ spec:
           - ReadWriteOnce
         resources:
           requests:
-            storage: {{ .Values.live.peering.storage }}
+            storage: {{ .Values.live.node.storage }}
 {{ end }}
 # ###
 # RPC
@@ -157,8 +141,8 @@ spec:
     spec:
       containers:
         - name: rpc
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.live.rpc.image.account }}/{{ .Values.abbreviation }}:{{ .Values.live.rpc.image.tag }}"
+          imagePullPolicy: {{ .Values.live.rpc.image.pullPolicy }}
           ports:
             # rpc
             {{ if eq .Values.live.rpc.enabled true }}
@@ -170,13 +154,7 @@ spec:
             - containerPort: {{ .Values.live.webSocket.port }}
               protocol: TCP
             {{ end }}
-          resources:
-            requests:
-              cpu: 300m
-              memory: 256Mi
-            limits:
-              cpu: 500m
-              memory: 512Mi
+          resources: {{ toYaml .Values.live.rpc.resources | nindent 12 }}
           volumeMounts:
             - name: data
               mountPath: /root/{{ .Values.abbreviation | upper }}
@@ -185,12 +163,14 @@ spec:
           livenessProbe:
             # rpc
             httpGet:
-              port: 7076
+              port: {{ .Values.live.rpc.port }}
           readinessProbe:
             httpGet:
-              port: 7076
+              port: {{ .Values.live.rpc.port }}
       imagePullSecrets:
-        - name: registry
+        {{- with .Values.imagePullSecrets }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
       serviceAccountName: "{{ .Values.abbreviation }}"
       automountServiceAccountToken: true
   volumeClaimTemplates:

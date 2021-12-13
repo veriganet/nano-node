@@ -2,28 +2,34 @@ storageClassName: nfs-dynamic
 
 live:
   enabled: true
+  node:
+    storage: 10Gi
+    replicaCount: 2
   peering:
     enabled: true
-    storage: 10Gi
-    replica: 2
   rpc:
     enabled: true
     storage: 10Gi
-    replica: 2
+    replicaCount: 2
 beta:
   enabled: false
-  peering:
-    enabled: true
+  node:
     storage: 1Gi
+  peering:
+    enabled: false
     replica: 1
   rpc:
+    enabled: false
+    storage: 10Gi
+    replicaCount: 1
 test:
   enabled: false
+  node:
+    storage: 1Gi
   peering:
-    enabled: true
-    storage: 1Gi
-    replica: 1
+    enabled: false
+    replicaCount: 1
   rpc:
-    enabled: true
-    storage: 1Gi
-    replica: 1
+    enabled: false
+    storage: 10Gi
+    replicaCount: 1
