@@ -42,7 +42,8 @@ steps:
         user_pass=$(echo -n "$CHARTMUSEUM_USER:$CHARTMUSEUM_PASS" | base64)
         curl -H "Authorization:Basic $user_pass" --data-binary "@$chart_file_name" $CHARTMUSEUM_URL/api/charts
       - |
-        cd helm-charts/helm-charts/pv
+        cd ../
+        cd pv/
         helm package .
         chart_file_name=$(ls *.tgz)
         user_pass=$(echo -n "$CHARTMUSEUM_USER:$CHARTMUSEUM_PASS" | base64)
