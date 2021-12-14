@@ -25,6 +25,32 @@ steps:
       event:
         - push
 
+  - name: helm-chart
+    image: veriganet/base-image:helm-363
+    pull: always
+    environment:
+      CHARTMUSEUM_URL: https://charts.veriga.net
+      CHARTMUSEUM_USER:
+        from_secret: chartmuseum_user
+      CHARTMUSEUM_PASS:
+        from_secret: chartmuseum_pass
+    commands:
+      - |
+        cd helm-charts/helm-charts/nano-node
+        helm package .
+        chart_file_name=$(ls *.tgz)
+        user_pass=$(echo -n "$CHARTMUSEUM_USER:$CHARTMUSEUM_PASS" | base64)
+        curl -H "Authorization:Basic $user_pass" --data-binary "@$chart_file_name" $CHARTMUSEUM_URL/api/charts
+      - |
+        cd helm-charts/helm-charts/pv
+        helm package .
+        chart_file_name=$(ls *.tgz)
+        user_pass=$(echo -n "$CHARTMUSEUM_USER:$CHARTMUSEUM_PASS" | base64)
+        curl -H "Authorization:Basic $user_pass" --data-binary "@$chart_file_name" $CHARTMUSEUM_URL/api/charts
+    when:
+      event:
+        - push
+
 services:
   - name: docker
     image: docker:dind
