@@ -15,12 +15,12 @@ steps:
         from_secret: docker_api_key
       ECR: veriganet
       REPO_NAME: nano-node
-      REPO_TAG: dnsupdate-latest
+      NANO_NODE_VERSION: V22.1
     commands:
       - sleep 10 # give docker enough time to start
       - docker login -u veriganet -p $DOCKER_API_KEY
-      - docker build -t $ECR/$REPO_NAME:$REPO_TAG -f dnsupdate/Dockerfile .
-      - docker push $ECR/$REPO_NAME:$REPO_TAG
+      - docker build -t $ECR/$REPO_NAME:dnsupdate-$NANO_NODE_VERSION -f dnsupdate/Dockerfile .
+      - docker push $ECR/$REPO_NAME:dnsupdate-$NANO_NODE_VERSION
     when:
       event:
         - push

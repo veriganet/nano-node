@@ -7,7 +7,7 @@ cloudflareZoneID: "vault:secret/data/cloudflare/#zone_id"
 dnsupdate:
   image:
     account: "veriganet"
-    tag: "dnsupdate-latest"
+    tag: "dnsupdate-V22.1"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -23,7 +23,7 @@ imagePullSecrets:
 preprep:
   image:
     account: "veriganet"
-    tag: "preprep-latest"
+    tag: "preprep-V22.1"
     pullPolicy: IfNotPresent
   resources:
     requests:
@@ -42,7 +42,7 @@ live:
   node:
     image:
       account: "veriganet"
-      tag: "V22.1"
+      tag: "node-V22.1"
       pullPolicy: Always
     resources:
       requests:
@@ -63,7 +63,7 @@ live:
     control: false
     image:
       account: "veriganet"
-      tag: "V22.1"
+      tag: "node-V22.1"
       pullPolicy: Always
     ingress:
       enabled: false
