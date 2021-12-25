@@ -1,7 +1,7 @@
 # #######
 # PEERING
 # #######
-{{ if eq .Values.live.rpc.enabled true}}
+{{ if eq .Values.live.node.enabled true}}
 {{ range $i, $e := until (.Values.live.node.replicaCount | int) }}
 ---
 kind: PersistentVolumeClaim

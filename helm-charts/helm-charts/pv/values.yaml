@@ -3,6 +3,7 @@ storageClassName: nfs-dynamic
 live:
   enabled: true
   node:
+    enabled: true
     storage: 10Gi
     replicaCount: 2
   peering:
