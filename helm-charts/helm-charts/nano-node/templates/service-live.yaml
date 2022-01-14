@@ -43,3 +43,23 @@ spec:
   selector:
     app: rpc-live
 {{ end }}
+#
+# callback
+#
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: callback-live
+  labels:
+    app: callback-live
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5000
+      protocol: TCP
+      name: callback
+      targetPort: 5000
+  selector:
+    app: rpc-live

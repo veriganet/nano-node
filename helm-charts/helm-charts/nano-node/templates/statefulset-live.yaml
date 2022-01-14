@@ -143,6 +143,12 @@ spec:
         - name: rpc
           image: "{{ .Values.live.rpc.image.account }}/{{ .Values.abbreviation }}:{{ .Values.live.rpc.image.tag }}"
           imagePullPolicy: {{ .Values.live.rpc.image.pullPolicy }}
+          command:
+            - /usr/bin/entry.sh
+            - {{ .Values.abbreviation }}_node
+            - daemon
+            - --config node.logging.log_to_cerr=true
+            - --rpc.enable_control=true
           ports:
             # rpc
             {{ if eq .Values.live.rpc.enabled true }}
@@ -154,6 +160,8 @@ spec:
             - containerPort: {{ .Values.live.webSocket.port }}
               protocol: TCP
             {{ end }}
+            - containerPort: 5000
+              protocol: TCP
           resources: {{ toYaml .Values.live.rpc.resources | nindent 12 }}
           volumeMounts:
             - name: data
