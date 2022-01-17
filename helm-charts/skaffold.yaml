@@ -12,24 +12,26 @@ profiles:
         releases:
           - name: pv
             chartPath: ./helm-charts/pv
-            namespace: kor
+            namespace: test
           - name: node
             chartPath: ./helm-charts/nano-node
-            namespace: kor
+            namespace: test
             setValues:
-              abbreviation: "kor"
+              abbreviation: test
               live.enabled: "true"
               live.peering.enabled: "true"
               live.peering.port: "7175"
               serviceAccount.create: "true"
+              cloudflareZoneName: "verigasvc.com"
           - name: rpc
             chartPath: ./helm-charts/nano-node
-            namespace: kor
+            namespace: test
             setValues:
-              abbreviation: kor
+              abbreviation: test
               live.enabled: "true"
               live.rpc.control: "false"
               live.rpc.enabled: "true"
               live.rpc.port: "7076"
               live.webSocket.enabled: "true"
               live.webSocket.port: "7078"
+              cloudflareZoneName: "verigasvc.com"

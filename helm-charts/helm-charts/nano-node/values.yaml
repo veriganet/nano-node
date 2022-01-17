@@ -1,4 +1,4 @@
-abbreviation: "kor"
+abbreviation: "test"
 
 cloudflareAPIToken: "vault:secret/data/cloudflare/#api_key"
 cloudflareZoneName: "verigasvc.com"
