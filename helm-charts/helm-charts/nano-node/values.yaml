@@ -34,12 +34,12 @@ preprep:
       memory: 128Mi
 
 live:
-  enabled: false
   ipc:
     enabled: false
     ipcPort: 7077
     processIpcPort: ""
   node:
+    enabled: true
     image:
       account: "veriganet"
       tag: "node-V22.1"

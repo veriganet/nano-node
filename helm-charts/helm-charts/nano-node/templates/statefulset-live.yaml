@@ -1,7 +1,7 @@
 # #######
 # PEERING
 # #######
-{{ if eq .Values.live.peering.enabled true }}
+{{ if eq .Values.live.node.enabled true }}
 ---
 apiVersion: apps/v1
 kind: StatefulSet
@@ -26,6 +26,7 @@ spec:
       labels:
         app: node-live
     spec:
+{{ if eq .Values.live.peering.enabled true }}
       initContainers:
         - name: dnsupdate
           image: "{{ .Values.dnsupdate.image.account }}/nano-node:{{ .Values.dnsupdate.image.tag }}"
@@ -41,6 +42,7 @@ spec:
             - name: CLOUDFLARE_ZONE_ID
               value: "{{ .Values.cloudflareZoneID }}"
           resources: {{ toYaml .Values.dnsupdate.resources | nindent 12 }}
+{{ end }}
 {{ if eq .Values.live.representative.enabled true }}
         - name: preprep
           image: "{{ .Values.preprep.image.account }}/{{ .Values.abbreviation }}:{{ .Values.preprep.image.tag }}"
@@ -139,6 +141,23 @@ spec:
       labels:
         app: rpc-live
     spec:
+{{ if eq .Values.live.peering.enabled true }}
+      initContainers:
+        - name: dnsupdate
+          image: "{{ .Values.dnsupdate.image.account }}/nano-node:{{ .Values.dnsupdate.image.tag }}"
+          imagePullPolicy: {{ .Values.dnsupdate.image.pullPolicy }}
+          command: ["/usr/local/bin/dnsupdate"]
+          env:
+            - name: ABBREVIATION
+              value: "{{ .Values.abbreviation }}"
+            - name: CLOUDFLARE_API_TOKEN
+              value: "{{ .Values.cloudflareAPIToken }}"
+            - name: CLOUDFLARE_ZONE_NAME
+              value: "{{ .Values.cloudflareZoneName }}"
+            - name: CLOUDFLARE_ZONE_ID
+              value: "{{ .Values.cloudflareZoneID }}"
+          resources: {{ toYaml .Values.dnsupdate.resources | nindent 12 }}
+{{ end }}
       containers:
         - name: rpc
           image: "{{ .Values.live.rpc.image.account }}/{{ .Values.abbreviation }}:{{ .Values.live.rpc.image.tag }}"
@@ -148,8 +167,14 @@ spec:
             - {{ .Values.abbreviation }}_node
             - daemon
             - --config node.logging.log_to_cerr=true
-            - --rpc.enable_control=true
+            - --config rpc.enable_control=true
           ports:
+            # peering
+            {{ if eq .Values.live.peering.enabled true }}
+            - containerPort: {{ .Values.live.peering.port }}
+              hostPort: {{ .Values.live.peering.port }}
+              protocol: TCP
+            {{ end }}
             # rpc
             {{ if eq .Values.live.rpc.enabled true }}
             - containerPort: {{ .Values.live.rpc.port }}
@@ -160,8 +185,6 @@ spec:
             - containerPort: {{ .Values.live.webSocket.port }}
               protocol: TCP
             {{ end }}
-            - containerPort: 5000
-              protocol: TCP
           resources: {{ toYaml .Values.live.rpc.resources | nindent 12 }}
           volumeMounts:
             - name: data

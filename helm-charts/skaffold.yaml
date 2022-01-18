@@ -18,20 +18,25 @@ profiles:
             namespace: test
             setValues:
               abbreviation: test
-              live.enabled: "true"
+              live.node.enabled: "true"
               live.peering.enabled: "true"
-              live.peering.port: "7175"
-              serviceAccount.create: "true"
+              live.peering.port: "7180"
+              live.rpc.enabled: "false"
+              serviceAccount.create: "false"
               cloudflareZoneName: "verigasvc.com"
           - name: rpc
             chartPath: ./helm-charts/nano-node
             namespace: test
+            createNamespace: false
             setValues:
               abbreviation: test
-              live.enabled: "true"
-              live.rpc.control: "false"
+              live.node.enabled: "false"
               live.rpc.enabled: "true"
+              live.peering.enabled: "true"
+              live.peering.port: "7180"
+              live.rpc.control: "false"
               live.rpc.port: "7076"
               live.webSocket.enabled: "true"
               live.webSocket.port: "7078"
+              serviceAccount.create: "false"
               cloudflareZoneName: "verigasvc.com"
