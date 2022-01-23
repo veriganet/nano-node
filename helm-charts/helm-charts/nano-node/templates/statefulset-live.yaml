@@ -72,6 +72,7 @@ spec:
             - daemon
             - -l
             - --config node.enable_voting=true
+            - --config node.online_weight_minimum=600000000000000000000000000000000000
           ports:
             # peering
             {{ if eq .Values.live.peering.enabled true }}
@@ -168,6 +169,8 @@ spec:
             - daemon
             - --config node.logging.log_to_cerr=true
             - --config rpc.enable_control=true
+            - --config node.enable_voting=true
+            - --config node.online_weight_minimum=600000000000000000000000000000000000
           ports:
             # peering
             {{ if eq .Values.live.peering.enabled true }}
