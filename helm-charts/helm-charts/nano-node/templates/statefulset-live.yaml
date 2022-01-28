@@ -71,8 +71,12 @@ spec:
             - {{ .Values.abbreviation }}_node
             - daemon
             - -l
+            {{- if eq .Values.live.node.enable_voting true -}}
             - --config node.enable_voting=true
-            - --config node.online_weight_minimum=600000000000000000000000000000000000
+            {{- end -}}
+            {{- if .Values.live.node.online_weight_minimum -}}
+            - --config node.online_weight_minimum={{ .Values.live.node.online_weight_minimum }}
+            {{- end -}}
           ports:
             # peering
             {{ if eq .Values.live.peering.enabled true }}
@@ -168,9 +172,15 @@ spec:
             - {{ .Values.abbreviation }}_node
             - daemon
             - --config node.logging.log_to_cerr=true
+            {{- if eq .Values.live.rpc.control true -}}
             - --config rpc.enable_control=true
+            {{- end -}}
+            {{- if eq .Values.live.rpc.enable_voting true -}}
             - --config node.enable_voting=true
-            - --config node.online_weight_minimum=600000000000000000000000000000000000
+            {{- end -}}
+            {{- if .Values.live.node.online_weight_minimum -}}
+            - --config node.online_weight_minimum={{ .Values.live.rpc.online_weight_minimum }}
+            {{- end -}}
           ports:
             # peering
             {{ if eq .Values.live.peering.enabled true }}
