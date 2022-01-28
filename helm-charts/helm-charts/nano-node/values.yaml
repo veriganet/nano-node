@@ -41,7 +41,7 @@ live:
   node:
     enabled: true
     enable_voting: true
-    online_weight_minimum: 6000000000000000000000000000000000000
+    online_weight_minimum: "6000000000000000000000000000000000000"
     image:
       account: "veriganet"
       tag: "node-V22.1"
@@ -64,7 +64,7 @@ live:
     enabled: false
     control: false
     enable_voting: true
-    online_weight_minimum: 6000000000000000000000000000000000000
+    online_weight_minimum: "6000000000000000000000000000000000000"
     image:
       account: "veriganet"
       tag: "node-V22.1"
