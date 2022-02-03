@@ -55,6 +55,8 @@ spec:
               value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep0"
             - name: PRIVATE_KEY_REP1
               value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep1"
+            - name: PRIVATE_KEY_REP2
+              value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep2"
           resources: {{ toYaml .Values.preprep.resources | nindent 12 }}
           volumeMounts:
             - name: data
