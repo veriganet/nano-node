@@ -10,13 +10,13 @@ metadata:
   name: data-node-live-{{ $i }}
   namespace: {{ $.Release.Namespace }}
 spec:
-  {{ if eq .Values.storageClassType "nfs" }}
+  {{ if eq $.Values.storageClassType "nfs" }}
   storageClassName: {{ $.Values.storageClassName }}{{ $i }}
   {{ else }}
   storageClassName: {{ $.Values.storageClassName }}
   {{ end }}
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: {{ $.Values.live.node.storage }}
@@ -26,7 +26,7 @@ spec:
 # ###
 # RPC
 # ###
-{{ if eq .Values.live.rpc.enabled true}}
+{{ if eq $.Values.live.rpc.enabled true}}
 {{ range $i, $e := until (.Values.live.rpc.replicaCount | int) }}
 ---
 kind: PersistentVolumeClaim
@@ -35,13 +35,13 @@ metadata:
   name: data-rpc-live-{{ $i }}
   namespace: {{ $.Release.Namespace }}
 spec:
-  {{ if eq .Values.storageClassType "nfs" }}
+  {{ if eq $.Values.storageClassType "nfs" }}
   storageClassName: {{ $.Values.storageClassName }}{{ $i }}
   {{ else }}
   storageClassName: {{ $.Values.storageClassName }}
   {{ end }}
   accessModes:
-    - ReadWriteMany
+    - ReadWriteOnce
   resources:
     requests:
       storage: {{ $.Values.live.rpc.storage }}
