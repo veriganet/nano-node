@@ -10,7 +10,10 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: rpc-live
+  annotations:
+    kubernetes.io/ingress.class: {{ .Values.live.ingress.ingressClassName }}
 spec:
+  ingressClassName: {{ .Values.live.ingress.ingressClassName }}
   rules:
     - host: {{ .Values.live.rpc.ingress.host}}
       http:

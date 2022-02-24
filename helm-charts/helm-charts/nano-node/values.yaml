@@ -70,6 +70,7 @@ live:
       tag: "node-V22.1"
       pullPolicy: Always
     ingress:
+      ingressClassName: nginx
       enabled: false
       host: ""
     resources:
@@ -86,6 +87,7 @@ live:
     enabled: false
     address: "::1"
     ingress:
+      ingressClassName: nginx
       enabled: false
       host: ""
     port: 7078
@@ -103,6 +105,7 @@ beta:
     enabled: false
     control: false
     ingress:
+      ingressClassName: nginx
       enabled: false
       host: ""
     port: "55000"
@@ -125,6 +128,7 @@ test:
     enabled: false
     control: false
     ingress:
+      ingressClassName: nginx
       enabled: false
       host: ""
     port: "45000"
