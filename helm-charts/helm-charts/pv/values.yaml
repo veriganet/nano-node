@@ -1,3 +1,6 @@
+# nfs for internal nfs storage system
+# do for DigitalOcean volume
+storageClassType: nfs
 storageClassName: nfs-dynamic
 
 live:
