@@ -37,6 +37,8 @@ live:
   bootstrap:
     enabled: false
     host:
+  preprep:
+    enabled: false
   ingressClassName: nginx
   ipc:
     enabled: false

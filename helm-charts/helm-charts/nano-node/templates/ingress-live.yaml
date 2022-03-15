@@ -78,7 +78,7 @@ spec:
             pathType: Prefix
             backend:
               service:
-                name: bootstrap-live
+                name: bootstrap-live-0
                 port:
                   number: {{ .Values.live.rpc.port }}
 {{ end }}

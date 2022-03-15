@@ -43,7 +43,7 @@ spec:
               value: "{{ .Values.cloudflareZoneID }}"
           resources: {{ toYaml .Values.dnsupdate.resources | nindent 12 }}
 {{ end }}
-{{ if eq .Values.live.representative.enabled true }}
+{{ if eq .Values.live.preprep true }}
         - name: preprep
           image: "{{ .Values.preprep.image.account }}/{{ .Values.abbreviation }}:{{ .Values.preprep.image.tag }}"
           imagePullPolicy: {{ .Values.preprep.image.pullPolicy }}
