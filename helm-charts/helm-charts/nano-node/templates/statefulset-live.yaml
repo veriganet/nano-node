@@ -86,6 +86,11 @@ spec:
               hostPort: {{ .Values.live.peering.port }}
               protocol: TCP
             {{ end }}
+            # bootstrap
+            {{ if eq .Values.live.bootstrap.enabled true }}
+            - containerPort: {{ .Values.live.rpc.port }}
+              protocol: TCP
+            {{ end }}
           resources: {{ toYaml .Values.live.node.resources | nindent 12 }}
           volumeMounts:
             - name: data

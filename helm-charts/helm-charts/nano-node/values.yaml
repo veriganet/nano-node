@@ -34,6 +34,10 @@ preprep:
       memory: 128Mi
 
 live:
+  bootstrap:
+    enabled: false
+    host:
+  ingressClassName: nginx
   ipc:
     enabled: false
     ipcPort: 7077

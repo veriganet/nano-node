@@ -43,3 +43,25 @@ spec:
   selector:
     app: rpc-live
 {{ end }}
+#
+# bootstrap
+#
+{{ if eq .Values.live.bootstrap.enabled true }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bootstrap-live
+  labels:
+    app: bootstrap-live
+  namespace: {{ .Release.Namespace }}
+spec:
+  type: ClusterIP
+  ports:
+    - port: {{ .Values.live.rpc.port }}
+      protocol: TCP
+      name: rpc
+      targetPort: {{ .Values.live.rpc.port }}
+  selector:
+    app: node-live
+{{ end }}
