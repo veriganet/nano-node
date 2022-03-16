@@ -62,7 +62,7 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: bootstrap-live-{{ $i }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
   annotations:
     nginx.ingress.kubernetes.io/auth-type: basic
     nginx.ingress.kubernetes.io/auth-secret: bootstrap-auth
@@ -70,7 +70,7 @@ metadata:
   labels:
     app: bootstrap-live
 spec:
-  ingressClassName: {{ .Values.live.ingressClassName }}
+  ingressClassName: {{ $.Values.live.ingressClassName }}
   rules:
     - host: {{ $.Values.abbreviation }}-rep{{ $i }}.{{ $.Values.domainsvc }}
       http:
@@ -81,6 +81,6 @@ spec:
               service:
                 name: bootstrap-live-{{ $i }}
                 port:
-                  number: {{ .Values.live.rpc.port }}
+                  number: {{ $.Values.live.rpc.port }}
 {{ end }}
 {{ end }}

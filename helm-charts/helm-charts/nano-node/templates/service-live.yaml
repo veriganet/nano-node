@@ -55,14 +55,14 @@ metadata:
   name: bootstrap-live-{{ $i }}
   labels:
     app: bootstrap-live-{{ $i }}
-  namespace: {{ .Release.Namespace }}
+  namespace: {{ $.Release.Namespace }}
 spec:
   type: ClusterIP
   ports:
-    - port: {{ .Values.live.rpc.port }}
+    - port: {{ $.Values.live.rpc.port }}
       protocol: TCP
       name: rpc
-      targetPort: {{ .Values.live.rpc.port }}
+      targetPort: {{ $.Values.live.rpc.port }}
   selector:
     statefulset.kubernetes.io/pod-name: node-live-{{ $i }}
 {{ end }}
