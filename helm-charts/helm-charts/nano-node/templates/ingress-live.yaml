@@ -55,12 +55,13 @@ spec:
 #
 # bootstrap
 #
-{{ if eq .Values.live.bootstrap.enabled true }}
+{{ if eq .Values.live.representative.bootstrap.enabled true }}
+{{ range $i, $e := until (.Values.live.representative.replicaCount | int) }}
 ---
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: bootstrap-live
+  name: bootstrap-live-{{ $i }}
   namespace: {{ .Release.Namespace }}
   annotations:
     nginx.ingress.kubernetes.io/auth-type: basic
@@ -71,14 +72,15 @@ metadata:
 spec:
   ingressClassName: {{ .Values.live.ingressClassName }}
   rules:
-    - host: {{ .Values.live.bootstrap.host }}
+    - host: {{ $.Values.abbreviation }}-rep{{ $i }}.{{ $.Values.domainsvc }}
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: bootstrap-live-0
+                name: bootstrap-live-{{ $i }}
                 port:
                   number: {{ .Values.live.rpc.port }}
+{{ end }}
 {{ end }}

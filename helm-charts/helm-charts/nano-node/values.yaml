@@ -3,6 +3,7 @@ abbreviation: "test"
 cloudflareAPIToken: "vault:secret/data/cloudflare/#api_key"
 cloudflareZoneName: "verigasvc.com"
 cloudflareZoneID: "vault:secret/data/cloudflare/#zone_id"
+domainsvc: "verigasvc.com"
 
 dnsupdate:
   image:
@@ -34,9 +35,6 @@ preprep:
       memory: 128Mi
 
 live:
-  bootstrap:
-    enabled: false
-    host:
   preprep:
     enabled: false
   ingressClassName: nginx
@@ -66,6 +64,10 @@ live:
     port: 7075
   representative:
     enabled: true
+    replicaCount: 2
+    bootstrap:
+      enabled: false
+      host:
   rpc:
     enabled: false
     control: false

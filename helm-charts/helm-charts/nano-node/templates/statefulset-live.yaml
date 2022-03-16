@@ -87,7 +87,7 @@ spec:
               protocol: TCP
             {{ end }}
             # bootstrap
-            {{ if eq .Values.live.bootstrap.enabled true }}
+            {{ if eq .Values.live.representative.bootstrap.enabled true }}
             - containerPort: {{ .Values.live.rpc.port }}
               protocol: TCP
             {{ end }}
