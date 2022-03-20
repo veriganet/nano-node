@@ -10,8 +10,6 @@ metadata:
   namespace: {{ .Release.Namespace }}
   labels:
     app: rpc-live
-  annotations:
-    kubernetes.io/ingress.class: {{ .Values.live.ingress.ingressClassName }}
 spec:
   ingressClassName: {{ .Values.live.ingressClassName }}
   rules:
@@ -53,7 +51,7 @@ spec:
                   number: {{ .Values.live.webSocket.port }}
 {{ end }}
 #
-# bootstrap
+# representative bootstrap
 #
 {{ if eq .Values.live.representative.bootstrap.enabled true }}
 {{ range $i, $e := until (.Values.live.representative.replicaCount | int) }}
@@ -65,7 +63,7 @@ metadata:
   namespace: {{ $.Release.Namespace }}
   annotations:
     nginx.ingress.kubernetes.io/auth-type: basic
-    nginx.ingress.kubernetes.io/auth-secret: bootstrap-auth
+    nginx.ingress.kubernetes.io/auth-secret: representative-password-live
     nginx.ingress.kubernetes.io/auth-realm: 'Authentication Required'
   labels:
     app: bootstrap-live

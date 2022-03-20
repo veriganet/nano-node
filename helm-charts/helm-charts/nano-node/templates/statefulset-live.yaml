@@ -86,7 +86,7 @@ spec:
               hostPort: {{ .Values.live.peering.port }}
               protocol: TCP
             {{ end }}
-            # bootstrap
+            # representative bootstrap
             {{ if eq .Values.live.representative.bootstrap.enabled true }}
             - containerPort: {{ .Values.live.rpc.port }}
               protocol: TCP
