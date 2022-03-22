@@ -37,7 +37,7 @@ preprep:
 
 live:
   preprep:
-    enabled: false
+    enabled: true
   ingressClassName: nginx
   ipc:
     enabled: false
