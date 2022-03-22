@@ -4,6 +4,7 @@ cloudflareAPIToken: "vault:secret/data/cloudflare/#api_key"
 cloudflareZoneName: "verigasvc.com"
 cloudflareZoneID: "vault:secret/data/cloudflare/#zone_id"
 domainsvc: "verigasvc.com"
+enable_control: 1
 
 dnsupdate:
   image:

@@ -50,13 +50,9 @@ spec:
           command: ["/usr/bin/entry_preprep.sh"]
           env:
             - name: ABBREVIATION
-              value: {{ .Values.abbreviation }}
-            - name: PRIVATE_KEY_REP0
-              value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep0"
-            - name: PRIVATE_KEY_REP1
-              value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep1"
-            - name: PRIVATE_KEY_REP2
-              value: "vault:secret/data/{{ .Values.abbreviation }}/#private_key_rep2"
+              value: "{{ .Values.abbreviation }}"
+            - name: ENABLE_CONTROL
+              value: "{{ .Values.enable_control }}"
           resources: {{ toYaml .Values.preprep.resources | nindent 12 }}
           volumeMounts:
             - name: data
